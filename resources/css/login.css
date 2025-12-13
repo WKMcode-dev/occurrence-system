@@ -1,0 +1,92 @@
+/* login.css */
+
+:root {
+    --marechal-orange: #f7941d;     
+    --marechal-orange1: #ff7000;
+    --marechal-dark: #2c2c2c;       
+    --marechal-light: #f9f9f9;      
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #efefef;
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.login-box {
+    background-color: var(--marechal-light);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.login-box h2 {
+    margin-bottom: 1rem;
+    color: var(--marechal-dark);
+}
+.login-box p {
+    margin-top: 1rem;
+}
+
+
+form {
+    background-color: var(--marechal-light);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+}
+
+h2 {
+    text-align: center;
+    color: var(--marechal-dark);
+    margin-bottom: 1rem;
+}
+
+input {
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+button {
+    background-color: #007a33;
+    color: white;
+    border: none;
+    padding: 0.75rem;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+button:hover {
+    background-color: #005a24;
+}
+
+p {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+a {
+    color: var(--marechal-dark);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+a:hover {
+    text-decoration: underline;
+}

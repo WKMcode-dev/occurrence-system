@@ -1,0 +1,86 @@
+/* cadastro.css */
+
+/* Paleta Marechal */
+:root {
+    --marechal-orange: #f7941d;
+    --marechal-orange1: #ff7000;
+    --marechal-green: #007a33;
+    --marechal-dark: #2c2c2c;
+    --marechal-light: #f9f9f9;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #efefef;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Caixa central */
+.register-box {
+    background-color: var(--marechal-light);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.25);
+    width: 350px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+.register-box h2 {
+    margin-bottom: 1.5rem;
+    color: var(--marechal-dark);
+    text-align: center;
+}
+
+/* Inputs */
+.register-box input,
+.register-box select {
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    width: 100%;
+    transition: border 0.3s ease;
+}
+
+.register-box input:focus,
+.register-box select:focus {
+    border-color: var(--marechal-orange);
+    outline: none;
+}
+
+/* Botão */
+.register-box button {
+    background-color: var(--marechal-green);
+    color: white;
+    border: none;
+    padding: 0.75rem;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+    width: 100%;
+}
+
+.register-box button:hover {
+    background-color: #005a24;
+    transform: scale(1.03);
+}
+
+/* Animação */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
