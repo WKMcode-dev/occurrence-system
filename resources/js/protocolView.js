@@ -40,15 +40,22 @@ class ProtocolView {
             const id = e.target.dataset.id;
             if (!id) return;
 
-            if (e.target.classList.contains("doneBtn")) this.toggleHandler(id);
-            else if (e.target.classList.contains("viewBtn")) this.openModalHandler(id);
-            else if (e.target.classList.contains("deliverBtn")) this.toggleHandler(id);
+            if (e.target.classList.contains("doneBtn")) {
+                this.confirmDone(id);
+            }
+            else if (e.target.classList.contains("viewBtn")) {
+                this.openModalHandler(id);
+            }
+            else if (e.target.classList.contains("deliverBtn")) {
+                this.toggleHandler(id);
+            }
             else if (e.target.classList.contains("deleteBtn")) {
                 this.confirmDelete(id);
             }
-            else if (e.target.classList.contains("editBtn")) this.editHandler(id);
-            else if (e.target.closest(".protocol")) this.openModalHandler(id);
-        });
+            else if (e.target.classList.contains("editBtn")) {
+                this.editHandler(id);
+            }
+        }); // ← aqui está o fechamento correto do addEventListener
 
         // Fechar modal de visualização
         this.closeModalBtn.onclick = () => this.overlay.classList.add("hidden");
@@ -56,7 +63,7 @@ class ProtocolView {
     }
 
     confirmDelete(id) {
-        // Cria overlay de confirmação
+        // Cria overlay de confirmação para exclusão
         const overlay = document.createElement("div");
         overlay.className = "confirmOverlay";
 
@@ -71,6 +78,7 @@ class ProtocolView {
             </div>
         </div>
     `;
+
 
         document.body.appendChild(overlay);
 
@@ -95,6 +103,73 @@ class ProtocolView {
         overlay.onclick = (e) => {
             if (e.target === overlay) overlay.remove();
         };
+    }
+    confirmDone(id) {
+        // Cria overlay de confirmação para concluir
+        const overlay = document.createElement("div");
+        overlay.className = "confirmOverlay";
+
+        overlay.innerHTML = `
+    <div class="confirmModal">
+        <h2>Tem certeza que deseja concluir?</h2>
+        <p>Depois de concluído, não será possível voltar para "Entregues".</p>
+        <div class="confirmButtons">
+            <button id="confirmDoneBtn" class="confirmBtn">Concluir</button>
+            <button id="cancelDoneBtn" class="cancelBtn">Cancelar</button>
+        </div>
+    </div>
+`;
+
+        document.body.appendChild(overlay);
+
+        const confirmBtn = overlay.querySelector("#confirmDoneBtn");
+        const cancelBtn = overlay.querySelector("#cancelDoneBtn");
+
+        confirmBtn.onclick = () => {
+            this.toggleHandler(id); // chama o controller para concluir
+            overlay.remove();
+        };
+
+        cancelBtn.onclick = () => overlay.remove();
+
+        overlay.onclick = (e) => {
+            if (e.target === overlay) overlay.remove();
+        };
+    }
+
+    confirmBulkDelete(ids) {
+        const overlay = document.createElement("div");
+        overlay.className = "confirmOverlay";
+
+        overlay.innerHTML = `
+        <div class="confirmModal">
+            <h2>Tem certeza que deseja excluir ${ids.length} ocorrências?</h2>
+            <p>Digite <strong>EXCLUIR</strong> no campo abaixo para confirmar:</p>
+            <input id="confirmBulkInput" placeholder="Digite EXCLUIR">
+            <div class="confirmButtons">
+                <button id="confirmBulkDeleteBtn">Excluir</button>
+                <button id="cancelBulkDeleteBtn">Cancelar</button>
+            </div>
+        </div>
+    `;
+
+        document.body.appendChild(overlay);
+
+        const input = overlay.querySelector("#confirmBulkInput");
+        const confirmBtn = overlay.querySelector("#confirmBulkDeleteBtn");
+        const cancelBtn = overlay.querySelector("#cancelBulkDeleteBtn");
+
+        confirmBtn.onclick = () => {
+            if (input.value.trim().toUpperCase() === "EXCLUIR") {
+                this.bulkDeleteHandler(ids); // chama o controller
+                overlay.remove();
+            } else {
+                alert("Você precisa digitar EXCLUIR para confirmar.");
+            }
+        };
+
+        cancelBtn.onclick = () => overlay.remove();
+        overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
     }
     /* -------------------------------
         BINDINGS
@@ -125,10 +200,13 @@ class ProtocolView {
     bindFilter(handler) { this.filterButtons.forEach(btn => btn.onclick = () => handler(btn.dataset.filter)); }
     bindOpenModal(handler) { this.openModalHandler = handler; }
     bindEdit(handler) { this.editHandler = handler; }
+    bindBulkDelete(handler) {
+        this.bulkDeleteHandler = handler;
+    }
 
     /* -------------------------------
-        RENDER
-    --------------------------------*/
+    RENDER
+--------------------------------*/
     render(protocols) {
         this.list.innerHTML = "";
 
@@ -138,81 +216,104 @@ class ProtocolView {
         }
 
         const userRole = (document.body.dataset.role || "").toLowerCase();
-        // Bloquear botão de adicionar para TI Manhã e TI Noite
         if (userRole.includes("ti manhã") || userRole.includes("ti noite")) {
             if (this.addButton) {
                 this.addButton.disabled = true;
-                this.addButton.style.opacity = "0.5";   // opcional, deixa visualmente desativado
+                this.addButton.style.opacity = "0.5";
                 this.addButton.style.cursor = "not-allowed";
             }
         }
 
         const userName = document.body.dataset.user;
 
-
         protocols.forEach(p => {
             const div = document.createElement("div");
-            div.className = "protocol" + (p.done ? " done" : "") + (p.delivered ? " delivered" : "");;
+            div.className = "protocol" + (p.done ? " done" : "") + (p.delivered ? " delivered" : "");
             div.dataset.id = p.id;
 
             // Decide quais botões mostrar
             let buttonsHTML = "";
-
             if (userRole.includes("ti noite")) {
                 buttonsHTML = `
-        <button class="viewBtn" data-id="${p.id}">Visualizar</button>
-        <button class="deliverBtn" data-id="${p.id}">Entregar</button>
-    `;
+                <button class="viewBtn" data-id="${p.id}">Visualizar</button>
+                <button class="deliverBtn" data-id="${p.id}">Entregar</button>
+            `;
             } else if (userRole.includes("gestor")) {
                 buttonsHTML = `<button class="viewBtn" data-id="${p.id}">Visualizar</button>`;
                 if (p.delivered) {
                     buttonsHTML += `<button class="doneBtn" data-id="${p.id}">Concluir</button>`;
                 }
                 buttonsHTML += `
-        <button class="editBtn" data-id="${p.id}">Editar</button>
-        <button class="deleteBtn" data-id="${p.id}">Excluir</button>
-    `;
+                <button class="editBtn" data-id="${p.id}">Editar</button>
+                <button class="deleteBtn" data-id="${p.id}">Excluir</button>
+            `;
             } else if (userRole.includes("aprendiz")) {
                 buttonsHTML = `
-        <button class="viewBtn" data-id="${p.id}">Visualizar</button>
-        <button class="editBtn" data-id="${p.id}">Editar</button>
-        <button class="deleteBtn" data-id="${p.id}">Excluir</button>
-    `;
-
+                <button class="viewBtn" data-id="${p.id}">Visualizar</button>
+                <button class="editBtn" data-id="${p.id}">Editar</button>
+                <button class="deleteBtn" data-id="${p.id}">Excluir</button>
+            `;
             } else if (userRole.includes("ti manhã")) {
-                buttonsHTML = `
-        <button class="viewBtn" data-id="${p.id}">Visualizar</button>
-    `;
+                buttonsHTML = `<button class="viewBtn" data-id="${p.id}">Visualizar</button>`;
             }
 
-
+            // Monta o card com checkbox de seleção
             div.innerHTML = `
-    <div class="protocol-info">
+            <div class="protocol-info">
+        <input type="checkbox" class="selectBox" data-id="${p.id}">
         <p><strong>Veículo:</strong> ${p.vehicle}</p>
         <p><strong>Data da ocorrência:</strong> ${this.formatPlainDate(p.occurrenceDate)}</p>
         <p><strong>Horário:</strong> ${p.occurrenceTime}</p>
+
         <p><strong>Descrição:</strong> ${p.desc}</p>
     </div>
-    <div class="protocol-created">
-        Criado em: ${this.formatDate(p.createdAt)}<br>
-        Por: ${p.author ?? userName}
-    </div>
-    <div class="protocol-buttons">
-    <div class="button-group">
-        ${buttonsHTML}
-    </div>
-    <div class="status-group">
-        <span class="statusTag ${p.done ? "done" : p.delivered ? "delivered" : "pending"}">
-            ${p.done ? "Concluído" : p.delivered ? "Entregue" : "Pendente"}
-        </span>
-    </div>
-</div>
-`;
+
+            <div class="protocol-created">
+                Criado em: ${this.formatDate(p.createdAt)}<br>
+                Por: ${p.author ?? userName}
+                <br>
+                Expira em: ${p.expiresAt ? this.formatDate(p.expiresAt) : "—"}
+
+            </div>
+            <div class="protocol-buttons">
+                <div class="button-group">
+                    ${buttonsHTML}
+                </div>
+                <div class="status-group">
+                    <span class="statusTag ${p.done ? "done" : p.delivered ? "delivered" : "pending"}">
+                        ${p.done ? "Concluído" : p.delivered ? "Entregue" : "Pendente"}
+                    </span>
+                </div>
+            </div>
+        `;
 
             this.list.appendChild(div);
         });
-    }
 
+        // ✅ Controle do botão global de exclusão (fora do forEach)
+        const bulkBtn = document.getElementById("bulkDeleteBtn");
+        const checkboxes = document.querySelectorAll(".selectBox");
+
+        // força esconder se não houver nada marcado
+        const selected = Array.from(checkboxes).filter(c => c.checked);
+        bulkBtn.classList.toggle("hidden", selected.length === 0);
+
+        checkboxes.forEach(cb => {
+            cb.onchange = () => {
+                const selected = Array.from(checkboxes).filter(c => c.checked);
+                bulkBtn.classList.toggle("hidden", selected.length === 0);
+            };
+        });
+        bulkBtn.onclick = () => {
+            const selectedIds = Array.from(document.querySelectorAll(".selectBox:checked"))
+                .map(cb => cb.dataset.id);
+
+            if (selectedIds.length > 0) {
+                this.confirmBulkDelete(selectedIds); // chama a modal de confirmação
+            }
+        };
+
+    }
     /* -------------------------------
     FORMATAR DATA (padrão brasileiro dd/mm/yyyy)
 --------------------------------*/
@@ -306,6 +407,32 @@ class ProtocolView {
         this.editOverlay.onclick = (e) => {
             if (e.target === this.editOverlay) onCancel();
         };
+    }
+    renderPagination(currentPage, lastPage, onPageChange) {
+        const container = document.querySelector(".pagination");
+        if (!container) return;
+
+        container.innerHTML = "";
+
+        // Botão anterior
+        const prev = document.createElement("button");
+        prev.textContent = "<";
+        prev.disabled = currentPage === 1;
+        prev.onclick = () => onPageChange(currentPage - 1);
+
+        // Página atual
+        const label = document.createElement("span");
+        label.textContent = `Página ${currentPage} de ${lastPage}`;
+
+        // Botão próximo
+        const next = document.createElement("button");
+        next.textContent = ">";
+        next.disabled = currentPage === lastPage;
+        next.onclick = () => onPageChange(currentPage + 1);
+
+        container.appendChild(prev);
+        container.appendChild(label);
+        container.appendChild(next);
     }
 }
 

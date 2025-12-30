@@ -1,0 +1,225 @@
+/* ===========================
+   MODAL VISUALIZAÇÃO
+=========================== */
+#overlay {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+#overlay:not(.hidden) {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#modal {
+    background: white;
+    padding: 22px;
+    width: 100%;
+    max-width: 420px;
+    border-radius: 10px;
+    text-align: left;
+    transform: scale(0.8);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+}
+
+#modal textarea {
+    width: 100%;
+    resize: vertical;
+    min-height: 80px;
+    max-height: 200px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #aaa;
+    font-family: inherit;
+    font-size: 1rem;
+    box-sizing: border-box;
+    background: #f9f9f9;
+    color: #333;
+}
+
+#overlay:not(.hidden) #modal {
+    transform: scale(1);
+    opacity: 1;
+}
+
+#modal p {
+    margin: 8px 0;
+}
+
+#closeModal {
+    font-family: 'Poppins', sans-serif;
+    margin-top: 15px;
+    padding: 10px 18px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+    width: 100%;
+}
+
+#closeModal:hover {
+    background: #c82333;
+    transform: scale(1.05);
+}
+
+
+.viewBtn {
+    background: #6c757d;
+    /* cinza */
+    color: white;
+}
+
+.viewBtn:hover {
+    background: #5a6268;
+}
+
+/* ===========================
+   MODAL DE EDIÇÃO
+=========================== */
+#editOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    animation: fadeIn 0.3s forwards;
+    padding: 10px;
+}
+
+#editModal {
+    
+    background: white;
+    padding: 22px;
+    width: 100%;
+    max-width: 420px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transform: scale(0.8);
+    opacity: 0;
+    animation: scaleIn 0.3s forwards;
+}
+
+#editModal input {
+    font-family: 'Poppins', sans-serif;
+    box-sizing: border-box;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #aaa;
+    width: 100%;
+}
+
+#editModal textarea {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #aaa;
+    width: 100%;
+    resize: vertical;
+    min-height: 80px;
+    max-height: 200px;
+    font-family: inherit;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+.editButtons {
+    
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.editButtons button {
+    font-family: 'Poppins', sans-serif;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    flex: 1 1 48%;
+    transition: transform 0.2s ease;
+    font-weight: bold;
+}
+
+.editButtons button:hover {
+    transform: scale(1.05);
+}
+
+#saveEdit {
+    background: #28a745;
+    color: white;
+}
+
+#cancelEdit {
+    background: #dc3545;
+    color: white;
+}
+
+/* ===========================
+   ANIMAÇÕES
+=========================== */
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        pointer-events: auto;
+    }
+}
+
+@keyframes scaleIn {
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ===========================
+   RESPONSIVIDADE
+=========================== */
+@media (max-width: 520px) {
+
+    #form,
+    #tools {
+        flex-direction: column;
+        margin: clamp(1rem, 4vw, 2rem);
+        padding: clamp(0.5rem, 3vw, 1.5rem);
+    }
+
+    .protocol-buttons {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 2em;
+    }
+    .protocol-buttons button {
+        
+    flex: 1 1 100px; 
+    font-size: 13px; 
+    padding: 6px 10px;
+    }
+
+
+
+    .editButtons {
+        
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+}
+

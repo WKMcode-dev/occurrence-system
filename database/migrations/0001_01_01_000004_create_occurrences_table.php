@@ -10,11 +10,22 @@ return new class extends Migration {
         Schema::create('occurrences', function (Blueprint $table) {
             $table->id();
 
-            // Relacionamento com veículo
-            $table->foreignId('vehicle_id')->constrained('vehicles')->onDelete('cascade');
+            // Relacionamento com veículos de Taguatinga
+            $table->foreignId('taguatinga_vehicle_id')
+                  ->nullable()
+                  ->constrained('taguatinga_vehicles')
+                  ->onDelete('cascade');
+
+            // Relacionamento com veículos do P-Sul
+            $table->foreignId('psul_vehicle_id')
+                  ->nullable()
+                  ->constrained('psul_vehicles')
+                  ->onDelete('cascade');
 
             // Relacionamento com usuário que criou
-            $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
+            $table->foreignId('created_by')
+                  ->constrained('users')
+                  ->onDelete('cascade');
 
             // Campos principais
             $table->date('occurrence_date');     // data da ocorrência
@@ -26,6 +37,9 @@ return new class extends Migration {
 
             // Status entregue (TI Noite usa esse campo)
             $table->boolean('delivered')->default(false);
+
+            // Data de expiração (para exclusão temporária)
+            $table->dateTime('expires_at')->nullable();
 
             // created_at e updated_at
             $table->timestamps();

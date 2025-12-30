@@ -13,13 +13,17 @@ class ProtocolModel {
     normalize(data) {
         return {
             id: data.id,
-            vehicle: data.vehicle?.number ?? data.vehicle_id,
+            // pega o número do veículo de Taguatinga ou P-Sul
+            vehicle: data.taguatinga_vehicle?.number
+                ?? data.psul_vehicle?.number
+                ?? null,
             occurrenceDate: data.occurrence_date,
             occurrenceTime: data.occurrence_time,
             desc: data.description,
             done: data.done,
             delivered: data.delivered,
             createdAt: data.created_at,
+            expiresAt: data.expires_at,
             author: data.user?.username
         };
     }
@@ -27,12 +31,21 @@ class ProtocolModel {
     /**
      * Carrega todos os protocolos do backend
      */
-    async getAll() {
-        const res = await fetch('/api/occurrences', { credentials: 'same-origin' });
+    async getAll(page = 1) {
+        const res = await fetch(`/api/occurrences?page=${page}`, { credentials: 'same-origin' });
         if (!res.ok) throw new Error(`Erro ao listar: ${res.status}`);
         const raw = await res.json();
-        this.protocols = raw.map(p => this.normalize(p));
-        return this.protocols;
+
+        // Laravel retorna { data: [...], current_page, last_page, ... }
+        this.protocols = raw.data.map(p => this.normalize(p));
+
+        // Retorna os protocolos + info de paginação
+        return {
+            protocols: this.protocols,
+            currentPage: raw.current_page,
+            lastPage: raw.last_page,
+            total: raw.total
+        };
     }
 
 
@@ -101,6 +114,20 @@ class ProtocolModel {
         });
         if (!res.ok) throw new Error(`Erro ao excluir: ${res.status}`);
         this.protocols = this.protocols.filter(p => p.id !== id);
+    }
+    async bulkDelete(ids) {
+        for (const id of ids) {
+            const res = await fetch(`/api/occurrences/${id}`, {
+                method: 'DELETE',
+                credentials: 'same-origin',
+                headers: {
+                    'X-CSRF-TOKEN': this.token,
+                    'Accept': 'application/json'
+                }
+            });
+            if (!res.ok) throw new Error(`Erro ao excluir ocorrência ${id}: ${res.status}`);
+            this.protocols = this.protocols.filter(p => p.id !== id);
+        }
     }
 
 

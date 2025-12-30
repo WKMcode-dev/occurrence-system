@@ -1,0 +1,204 @@
+/* ===========================
+   LISTA DE PROTOCOLOS
+=========================== */
+#list {
+    max-width: 650px;
+    margin: 25px auto;
+}
+
+.protocol {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 6px solid #ff6600;
+    margin-bottom: 14px;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+}
+
+.protocol:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.protocol.done {
+    border-left-color: #28a745 !important;
+    opacity: 0.75;
+    /* text-decoration: line-through; */
+}
+
+.protocol.done .protocol-info p,
+.protocol.done .protocol-created {
+    text-decoration: line-through;
+}
+
+.protocol.done .status-group .statusTag {
+    text-decoration: none !important;
+}
+
+.protocol-info{
+    position: relative;
+}
+.protocol-info .selectBox {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    transform: scale(1.2);
+    cursor: pointer;
+}
+
+.protocol-info p {
+    margin: 4px 0;
+    color: #333;
+}
+
+.protocol-info p:nth-child(4) {
+    max-height: 4.5em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.protocol-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.protocol-created {
+    color: #999;
+    font-size: 0.85em;
+    white-space: nowrap;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+/* BOTÕES */
+.protocol-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.button-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.status-group {
+    margin-left: auto;
+}
+
+.statusTag {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    text-decoration: none !important;
+
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+}
+
+
+
+
+
+
+
+/* Neon cores */
+.statusTag.pending {
+    color: #ff9800;
+    background: #fff3e0;
+    box-shadow: 0 0 8px #ff9800;
+}
+
+.statusTag.delivered {
+    color: #2196f3;
+    background: #e3f2fd;
+    box-shadow: 0 0 8px #2196f3;
+}
+
+.statusTag.done {
+    color: #4caf50;
+    background: #e8f5e9;
+    box-shadow: 0 0 8px #4caf50;
+}
+
+
+
+.protocol-buttons button {
+    padding: 7px 12px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease;
+    font-size: 14px;
+}
+
+
+.protocol-buttons button:hover {
+    transform: scale(1.1);
+}
+
+.doneBtn {
+    background: #28a745;
+}
+
+.deleteBtn {
+    background: #dc3545;
+}
+
+.editBtn {
+    background: #ffc107;
+    color: #333 !important;
+}
+
+
+/* checkBox */
+.protocol {
+  position: relative;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 12px;
+  background: #fff;
+}
+
+.protocol-select {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+}
+
+.selectBox {
+  transform: scale(1.2);
+  cursor: pointer;
+}
+
+#bulkDeleteBtn {
+  background: #dc3545;
+  color: white;
+  font-weight: bold;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin: 1rem auto;
+  display: block;
+  transition: background 0.2s ease;
+}
+#bulkDeleteBtn:hover {
+  background: #c82333;
+}
+.hidden {
+  display: none !important;
+}

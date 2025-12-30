@@ -17,7 +17,6 @@
             <input type="password" name="password" placeholder="Senha" required>
             <button type="submit">Entrar</button>
         </form>
-        <p><a href="{{ route('register') }}">Criar conta</a></p>
     </div>
 </body>
 

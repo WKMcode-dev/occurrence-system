@@ -1,0 +1,226 @@
+#menuToggle {
+    position: fixed;
+    top: calc(70px + 29px); /* abaixo da topbar */
+    left: 26px;
+    background-color: #F5F5F7;
+    color: #FF8C42;
+    border: 1px solid #FF7700;
+    width: 48px;   /* largura fixa */
+    height: 48px;  /* altura fixa */
+    border-radius: 4px;
+    cursor: pointer;
+    z-index: 1001;
+    font-size: 1.2rem; /* tamanho do ícone/texto */
+    display: flex;
+    align-items: center;
+    justify-content: center; /* centraliza o ícone */
+}
+
+
+/* ===========================
+   MENU LATERAL RESPONSIVO
+=========================== */
+#sideMenu {
+    position: fixed;
+    top: 101px;
+    left: 0;
+    width: 343px;
+    height: calc(100% - 60px);
+    border-radius: 5px;
+    border: 1px solid #FF7700;
+    background-color: #FFFFFF;
+    color: #23232e;
+    transition: transform 0.3s ease;
+    z-index: 1000;
+    transform: translateX(-100%);
+    padding: 20px; 
+
+    display: flex;              /* NOVO: layout em coluna */
+    flex-direction: column;     /* NOVO: empilha verticalmente */
+}
+
+#sideMenu.open {
+    transform: translateX(0); 
+}
+
+#sideMenu ul {
+    list-style: none;
+    padding: 0;
+    margin: 40px 0 0 0;
+}
+
+#sideMenu li {
+    padding: 15px 20px;
+    display: flex;
+    
+    align-items: center;
+    gap: 12px;
+    transition: background 0.2s ease;
+}
+
+#sideMenu li i {
+    font-size: 1.2rem;
+}
+
+/* Bloco do usuário */
+.side-user {
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    position: relative;
+}
+
+
+.side-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #FF7700;
+    color: white;
+    font-weight: bold;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.side-name {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #23232e;
+}
+
+.side-logout {
+    display: flex;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+.Exit_Door{
+    display: flex;
+}
+
+.side-logout i.custom-icon {
+    font-size: 1.2rem;
+    color: #dc3545;
+}
+
+
+#menuClose {
+    position: absolute;
+    top: calc(10px + 10px);
+    left: 0;
+    background-color: #F5F5F7;
+    color: #FF8C42;
+    border: 1px solid #FF7700;
+    width: 48px;
+    height: 48px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#menuClose .close-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.List_Menu {
+
+    background-color: #ffefe8;
+    border-radius: 4px;
+    padding: 10px;
+    margin: 0;
+    height: calc(100% - 13em);
+    
+    overflow-y: auto;           /* ativa scroll vertical */
+
+    scrollbar-width: thin;
+    scrollbar-color: #FF7700 #ffefe8;
+
+    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.212);
+
+
+}
+
+.List_Menu::-webkit-scrollbar {
+    width: 6px;
+}
+.List_Menu::-webkit-scrollbar-track {
+    background: #ffefe8;
+}
+.List_Menu::-webkit-scrollbar-thumb {
+    background-color: #FF7700;
+    border-radius: 3px;
+}
+
+#menuOverlay {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 60px);
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 999;
+    display: none;
+    transition: opacity 0.3s ease;
+}
+
+#menuOverlay.visible {
+    display: block;
+}
+
+/* ------ */
+
+.menu-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: #23232e;
+    background-color: #ffffff;
+    border: 1px solid #FF7700;
+    border-radius: 4px;
+    padding: 12px 20px;
+    transition: background 0.2s ease;
+    width: 100%;
+}
+
+
+.menu-link:hover {
+    background-color: #eeeeee;
+}
+
+.menu-icon {
+    display: flex;
+    flex-shrink: 0;
+}
+
+.menu-icon img {
+    width: 24px;
+    height: 24px;
+}
+
+.menu-divider {
+    width: 2px;
+    height: 24px;
+    background-color: #FF7700;
+    margin: 0 12px;
+    flex-shrink: 0; /* impede que a linha seja comprimida */
+}
+
+
+.menu-label {
+    flex: 1; /* ocupa o espaço disponível */
+    font-size: 1rem;
+    font-weight: 500;
+    color: #23232e;
+}

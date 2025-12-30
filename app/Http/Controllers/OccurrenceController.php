@@ -3,9 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;   // <-- adiciona isso
 use Illuminate\Http\Request;
 use App\Models\Occurrence;
-use App\Models\Vehicle;
+use App\Models\User;
+use App\Models\TaguatingaVehicle;
+use App\Models\PsulVehicle;
+
+
+
 
 class OccurrenceController extends Controller
 {
@@ -17,14 +23,14 @@ class OccurrenceController extends Controller
         $user = Auth::user();
 
         if ($user->role === 'Aprendiz') {
-            $occurrences = Occurrence::with('vehicle', 'user')
+            $occurrences = Occurrence::with('taguatingaVehicle', 'psulVehicle', 'user')
                 ->where('created_by', $user->id)
                 ->orderBy('created_at', 'desc')
-                ->get();
+                ->paginate(6);
         } else {
-            $occurrences = Occurrence::with('vehicle', 'user')
+            $occurrences = Occurrence::with('taguatingaVehicle', 'psulVehicle', 'user')
                 ->orderBy('created_at', 'desc')
-                ->get();
+                ->paginate(6);
         }
 
         return view('occurrence', compact('occurrences'));
@@ -33,20 +39,22 @@ class OccurrenceController extends Controller
     /**
      * API JSON - lista ocorrências (para o JS consumir)
      */
-    public function listJson()
+    public function listJson(Request $request)
     {
         $user = Auth::user();
+        $perPage = 6;
+        $page = $request->input('page', 1);
 
         if ($user->role === 'Aprendiz') {
-            return Occurrence::with('vehicle', 'user')
+            return Occurrence::with('taguatingaVehicle', 'psulVehicle', 'user')
                 ->where('created_by', $user->id)
                 ->orderBy('created_at', 'desc')
-                ->get();
+                ->paginate($perPage, ['*'], 'page', $page);
         }
 
-        return Occurrence::with('vehicle', 'user')
+        return Occurrence::with('taguatingaVehicle', 'psulVehicle', 'user')
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate($perPage, ['*'], 'page', $page);
     }
 
 
@@ -70,17 +78,32 @@ class OccurrenceController extends Controller
             'description'      => 'required|string',
         ]);
 
-        $vehicle = Vehicle::where('number', $data['vehicle'])->firstOrFail();
+        $taguatinga = TaguatingaVehicle::where('number', $data['vehicle'])->first();
+        $psul = PsulVehicle::where('number', $data['vehicle'])->first();
 
-        $occurrence = Occurrence::create([
-            'vehicle_id'       => $vehicle->id,
-            'created_by'       => $user->id,
-            'occurrence_date'  => $data['occurrence_date'],
-            'occurrence_time'  => $data['occurrence_time'],
-            'description'      => $data['description'],
-        ]);
+        if (!$taguatinga && !$psul) {
+            abort(404, 'Veículo não encontrado em nenhuma frota.');
+        }
 
-        return response()->json($occurrence->load('vehicle', 'user'), 201);
+        $occurrenceData = [
+            'created_by'      => $user->id,
+            'occurrence_date' => $data['occurrence_date'],
+            'occurrence_time' => $data['occurrence_time'],
+            'description'     => $data['description'],
+        ];
+
+        if ($taguatinga) {
+            $occurrenceData['taguatinga_vehicle_id'] = $taguatinga->id;
+        } else {
+            $occurrenceData['psul_vehicle_id'] = $psul->id;
+        }
+
+        $occurrence = Occurrence::create($occurrenceData);
+
+        // Carrega os relacionamentos no objeto já criado
+        $occurrence->load('taguatingaVehicle', 'psulVehicle', 'user');
+
+        return response()->json($occurrence, 201);
     }
 
 
@@ -89,7 +112,7 @@ class OccurrenceController extends Controller
      */
     public function show($id)
     {
-        return Occurrence::with('vehicle', 'user')->findOrFail($id);
+        return Occurrence::with('taguatingaVehicle', 'psulVehicle', 'user')->findOrFail($id);
     }
 
 
@@ -110,11 +133,12 @@ class OccurrenceController extends Controller
         }
 
         $occurrence->update($request->only([
-            'vehicle_id',
             'occurrence_date',
             'occurrence_time',
             'description'
         ]));
+
+        $occurrence->load('taguatingaVehicle', 'psulVehicle', 'user');
 
         return response()->json($occurrence);
     }
@@ -150,19 +174,33 @@ class OccurrenceController extends Controller
         $user = Auth::user();
 
         if ($user->role === 'TI Noite') {
-            $occurrence->delivered = $occurrence->delivered ? false : true;
+            // Alterna status de entrega
+            $occurrence->delivered = !$occurrence->delivered;
             $occurrence->save();
+
+            $occurrence->load('taguatingaVehicle', 'psulVehicle', 'user');
             return response()->json($occurrence);
         }
 
         if (in_array($user->role, ['Gestor', 'TI Manhã'])) {
-            
             if (!$occurrence->delivered) {
                 abort(403, 'A ocorrência precisa ser entregue pela TI da Noite antes de ser concluída.');
             }
 
-            $occurrence->done = $occurrence->done ? false : true;
+            // Alterna status de conclusão
+            $occurrence->done = !$occurrence->done;
+
+            if ($occurrence->done) {
+                // Se acabou de ser concluída, define expiração para 30 dias
+                $occurrence->expires_at = now()->addDays(30);
+            } else {
+                // Se desmarcar como concluída, remove expiração
+                $occurrence->expires_at = null;
+            }
+
             $occurrence->save();
+
+            $occurrence->load('taguatingaVehicle', 'psulVehicle', 'user');
             return response()->json($occurrence);
         }
 

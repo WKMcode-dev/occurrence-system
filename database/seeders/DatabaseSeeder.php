@@ -15,11 +15,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Cria usuário de teste (não duplica se já existir)
+        User::firstOrCreate(
+            ['username' => 'testuser'],
+            [
+                'password' => bcrypt('secret'),
+                'role' => 'Gestor',
+            ]
+        );
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // Chama o seeder de veículos
+        $this->call(VehicleSeeder::class);
     }
 }

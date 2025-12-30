@@ -1,0 +1,207 @@
+/* ===========================
+   BARRA SUPERIOR
+=========================== */
+.topbar {
+    z-index: 1000;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    background: linear-gradient(135deg, rgb(255, 102, 0), rgba(255, 133, 51, 0));
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(20px); /* suporte Safari */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+
+
+    color: white;
+    padding: clamp(10px, 2vw, 11px);
+    border-radius: 12px;
+    margin-bottom: clamp(2rem, 5vw, 6rem);
+}
+
+.topbar h1 {
+    color: white;
+    margin: 0;
+    font-size: clamp(1.2rem, 2vw, 1.8rem);
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    margin-right: 1.5em;
+    gap: clamp(10px, 2vw, 20px);
+}
+
+.avatar {
+    position: relative;
+    width: clamp(32px, 4vw, 48px);
+    height: clamp(32px, 4vw, 48px);
+    border-radius: 50%;
+    background: #fff;
+    color: #ff6600;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(1rem, 2vw, 1.4rem);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    overflow: visible; 
+}
+
+/* Borda giratória perfeitamente alinhada */
+.avatar::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    
+    border: 5px solid transparent;
+    border-top-color: var(--border-color, gold);
+    border-right-color: var(--border-color, gold);
+    animation: spin 2s linear infinite;
+    box-sizing: border-box;
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Animação suave */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+body[data-role="gestor"] .avatar::before {
+    --border-color: gold;
+}
+
+body[data-role="aprendiz"] .avatar::before {
+    --border-color: #0d6efd; /* azul */
+}
+
+
+
+.logout-btn {
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    background: rgba(220, 53, 70, 0.842); /* vermelho translúcido */
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+
+    padding: clamp(8px, 1.5vw, 12px) clamp(14px, 2vw, 20px);
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    font-size: clamp(0.9rem, 1.5vw, 1rem);
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.178);
+}
+
+.logout-btn:hover {
+    background: rgb(212, 31, 49);
+    transform: scale(1.05);
+}
+
+@media (max-width: 520px) {
+    .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .user-info {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .logout-btn {
+        flex: 1;
+        margin-right: 1.5em;
+        text-align: center;
+    }
+}
+
+
+.protocol.delivered .protocol-info {
+    opacity: 0.8;
+}
+
+.protocol.delivered {
+    border-left: 4px solid #0d6efd;
+    /* azul */
+}
+
+/* Botão verde para concluir */
+.confirmBtn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.confirmBtn:hover {
+    background: #218838;
+}
+
+/* Botão vermelho para cancelar */
+.cancelBtn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.cancelBtn:hover {
+    background: #c82333;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 20px;
+    font-size: 1.2rem;
+}
+
+.pagination a {
+    padding: 6px 12px;
+    background: #ff6600;
+    color: white;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
+.pagination a:hover {
+    background: #cc5200;
+}
+
+.pagination .disabled {
+    padding: 6px 12px;
+    background: #ccc;
+    color: #666;
+    border-radius: 4px;
+}

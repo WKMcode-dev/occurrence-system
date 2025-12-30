@@ -5,27 +5,36 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Vehicle; // <-- importa o model Vehicle
 
 class Occurrence extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'vehicle_id',
+        'taguatinga_vehicle_id',
+        'psul_vehicle_id',
         'created_by',
         'occurrence_date',
         'occurrence_time',
         'description',
         'done',
         'delivered',
+        'expires_at',
     ];
 
-    public function vehicle()
+    // Relacionamento com veículos de Taguatinga
+    public function taguatingaVehicle()
     {
-        return $this->belongsTo(Vehicle::class);
+        return $this->belongsTo(TaguatingaVehicle::class);
     }
 
+    // Relacionamento com veículos do P-Sul
+    public function psulVehicle()
+    {
+        return $this->belongsTo(PsulVehicle::class);
+    }
+
+    // Relacionamento com usuário criador
     public function user()
     {
         return $this->belongsTo(User::class, 'created_by');
