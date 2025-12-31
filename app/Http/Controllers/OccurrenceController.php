@@ -191,7 +191,7 @@ class OccurrenceController extends Controller
             $occurrence->done = !$occurrence->done;
 
             if ($occurrence->done) {
-                // Se acabou de ser concluída, define expiração para 30 dias
+                // Se acabou de ser concluída, define expiração para 15 dias
                 $occurrence->expires_at = now()->addDays(15);
             } else {
                 // Se desmarcar como concluída, remove expiração
