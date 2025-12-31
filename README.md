@@ -28,12 +28,12 @@ Ele permite:
 
 ## ⚙️ Tecnologias utilizadas
 
-- ⚡ **Laravel** — Framework PHP moderno
-- 🐘 **PostgreSQL** — Banco de dados relacional
-- 📊 **PgAdmin** — Gerenciador de banco
-- 🎨 **Vite.js** — Bundler rápido para front-end
-- 💻 **JavaScript (ES6+)** — Lógica de interação
-- 🎨 **CSS3** — Estilização da interface
+- ⚡ **Laravel** — Framework PHP moderno  
+- 🐘 **PostgreSQL** — Banco de dados relacional  
+- 📊 **PgAdmin** — Gerenciador de banco  
+- 🎨 **Vite.js** — Bundler rápido para front-end  
+- 💻 **JavaScript (ES6+)** — Lógica de interação  
+- 🎨 **CSS3** — Estilização da interface  
 
 ---
 
@@ -49,9 +49,13 @@ cd occurrence-system
 composer install
 npm install
 ```
+
 ### 3. Configure o .env
-```copy .env.example .env```
-```SQL
+```bash
+copy .env.example .env
+```
+Edite o arquivo .env com suas credenciais do PostgreSQL:
+```bash
 DB_CONNECTION=pgsql
 DB_HOST=127.0.0.1
 DB_PORT=5432
@@ -59,20 +63,28 @@ DB_DATABASE=occurrence_system
 DB_USERNAME=postgres
 DB_PASSWORD=SenhaDoBancoDeDados
 ```
-### 4. Rode migrations e seeds
+
+### 4. Gere a chave da aplicação
+```bash
+php artisan key:generate
+```
+
+### 5. Rode migrations e seeds
 ```bash
 php artisan migrate --seed
 ```
-### 5. Inicie os Servidores
-Frontend (Vite.js)
+
+### 6. Inicie os Servidores
+Frontend (Vite.js):
 ```bash
 npm run dev
 ```
-Backend (Laravel)
+Backend (Laravel):
 ```bash
 php artisan serve
 ```
-🛠️ Comandos úteis
+
+### 🛠️ Comandos úteis
 - Rodar apenas a seed dos veículos:
 ```bash
 php artisan db:seed --class=VehicleSeeder
@@ -81,3 +93,8 @@ php artisan db:seed --class=VehicleSeeder
 ```bash
 php artisan migrate:fresh --seed
 ```
+
+### 📌 Observações
+- As ocorrências concluídas expiram automaticamente após 15 dias.
+- Usuários possuem permissões diferentes conforme o papel atribuído.
+- Frota inicial é carregada via arquivos CSV (frota_taguatinga.csv e frota_psul.csv) no seeder.
