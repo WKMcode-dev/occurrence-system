@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;   // <-- adiciona isso
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Occurrence;
 use App\Models\User;
@@ -192,7 +192,7 @@ class OccurrenceController extends Controller
 
             if ($occurrence->done) {
                 // Se acabou de ser concluída, define expiração para 30 dias
-                $occurrence->expires_at = now()->addDays(30);
+                $occurrence->expires_at = now()->addDays(15);
             } else {
                 // Se desmarcar como concluída, remove expiração
                 $occurrence->expires_at = null;
